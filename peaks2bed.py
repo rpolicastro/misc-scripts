@@ -1,5 +1,6 @@
 ##############
-#change peak folder to the folder where your peak files are
+#change peak_folder to the folder where your peak files are in,
+#or put script in peak file directory
 #need to import module python
 ##############
 
