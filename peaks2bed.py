@@ -19,7 +19,10 @@ class peaks2bed(object):
         self.peak_folder = peak_folder
         
         if self.peak_folder == '':
-            self.peak_folder = os.getcwd()
+            self.peak_folder = os.path.abspath(os.path.dirname(__file__))
+       
+        if not self.peak_folder.endswith('/'):
+            self.peak_folder = self.peak_folder + '/'
     
     def convert(self):
         
