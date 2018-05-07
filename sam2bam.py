@@ -40,7 +40,7 @@ class sam2bam(object):
     def moveBams(self, outputDir):
         if not os.path.exists(outputDir):
             os.makedirs(outputDir)
-        bams = [x for x in os.listdir(os.getcwd) if x.endswith('.bam') or x.endswith('.bai')]
+        bams = [x for x in os.listdir(os.getcwd()) if x.endswith('.bam') or x.endswith('.bai')]
         [os.rename(bam, os.path.join(outputDir),bam) for bam in bams]
 
 if __name__ == '__main__':
