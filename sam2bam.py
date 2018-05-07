@@ -17,7 +17,7 @@ class sam2bam(object):
         if not os.path.isdir(samDir):
             sys.exit(samDir + ' is not a valid directory')
         os.chdir(samDir)
-        self.procesors = processors
+        self.processors = processors
     
     def makeBams(self):
         sams = [x for x in os.listdir(os.getcwd()) if x.lower().endswith('.sam')]
@@ -47,4 +47,5 @@ if __name__ == '__main__':
     sam2bam = sam2bam(samDir=args.samDirectory, processors=args.processors)
     sam2bam.makeBams()
     sam2bam.sortBams()
+    sam2bam.indexBams()
     sam2bam.moveBams(outputDir=args.outputDirectory)
