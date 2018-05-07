@@ -26,7 +26,7 @@ class deeptools(object):
         
         os.chdir(self.bam_dir)
     
-    def makeBigwig(self):
+    def makeBigwigs(self):
         bams = [x for x in os.listdir(os.getcwd()) if x.endswith('sorted.bam')]
         for bam in bams:
             command = ['bamCoverage -b', bam,
