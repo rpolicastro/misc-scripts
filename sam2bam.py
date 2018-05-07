@@ -1,32 +1,50 @@
+#!/usr/bin/env python3.6
+
 import os
 import subprocess as sp
+import argparse as ap
+import sys
 
-class samToBam(object):
+parser = ap.ArgumentParser()
+parser.add_argument('-p', '--processors', default=1, help='number of processors')
+parser.add_argument('-s', '--samDirectory', required=True, help='directory containing sam files')
+parser.add_argument('-o', '--outputDirectory', required=True, help='directory where bam and index files will be moved')
+args = parser.parse_args()
+
+class sam2bam(object):
     
-    def __init__(self, sam_dir):
-        
-        self.current_dir = sam_dir
-        os.chdir(self.current_dir)
-        self.current_dir = os.getcwd()
-        
-        if not os.path.isdir(os.path.join(self.current_dir, 'bams')):
-            os.mkdir(os.path.join(self.current_dir, 'bams'))
+    def __init__(self, samDir, processors):
+        if not os.path.isdir(samDir):
+            sys.exit(samDir + ' is not a valid directory')
+        os.chdir(samDir)
+        self.procesors = processors
     
-    def sam_to_bam(self):
+    def makeBams(self):
+        sams = [x for x in os.listdir(os.getcwd()) if x.lower().endswith('.sam')]
+        if len(sams) == 0:
+            sys.exit('no sam files found')
+        [sp.call(' '.join(['samtools view -@', self.processors, '-b', sam, '>', sam[:-4] + '.bam']), shell=True) for sam in sams]
         
-        file_list = os.listdir(self.current_dir)
-        sam_files = [x for x in file_list if x.endswith('.sam')]
+    def sortBams(self):
+        bams = [x for x in os.listdir(os.getcwd()) if x.endswith('.bam')]
+        if len(bams) == 0:
+            sys.exit('no bam files found')
+        [sp.call(' '.join(['samtools sort -@', self.processors, bam, '-o', bam[:-4] + '_sorted.bam']), shell=True) for bam in bams]
+
+    def indexBams(self):
+        bams = [x for x in os.listdir(os.getcwd()) if x.endswith('sorted.bam')]
+        if len(bams) == 0:
+            sys.exit('no sorted bams found')
+        [sp.call(' '.join(['samtools index -@', self.processors, bam]), shell=True) for bam in bams]
     
-        for sam in sam_files:
-            new_file = os.path.join(self.current_dir,'bams',str(sam[:-4] + '.bam'))
-            command = ['samtools','view','-bS',sam,'>',new_file]
-            command = ' '.join(command)
-            sp.call(command, shell=True)
-            
+    def moveBams(self, outputDir):
+        if not os.path.exists(outputDir):
+            os.makedirs(outputDir)
+        bams = [x for x in os.listdir(os.getcwd) if x.endswith('.bam') or x.endswith('.bai')]
+        [os.rename(bam, os.path.join(outputDir),bam) for bam in bams]
+
 if __name__ == '__main__':
-    
-    convert = samToBam('/N/dc2/scratch/rpolicas/chec_free_mnase/aligned/')
-    convert.sam_to_bam()
-        
-        
-        
+    sam2bam = sam2bam(samDir=args.samDirectory, processors=args.processors)
+    sam2bam.makeBams()
+    sam2bam.sortBams()
+    sam2bam.moveBams(outputDir=args.outputDirectory)
