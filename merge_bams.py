@@ -39,7 +39,7 @@ class mergeBams(object):
     
     def moveBams(self):
         bams = [x for x in os.listdir() if x.endswith('merged.bam')]
-        [os.rename(x, os.path.join(self.output_dir, x)) for x in bams]
+        [os.rename(x, os.path.join(self.output_directory, x)) for x in bams]
 
 if __name__ == '__main__':
     merge = mergeBams(bamDir = args.bamDirectory,
