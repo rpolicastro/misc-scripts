@@ -28,7 +28,7 @@ class mergeBams(object):
             sys.exit('please include unique identifiers for files to merge')
     
     def merge(self):
-        bams = [x for x in os.listdir() if x.endswith('sorted.bam')]
+        bams = [x for x in os.listdir() if x.endswith('.bam')]
         if len(bams) == 0:
             sys.exit('no bam files found')
         for i in self.identifiers:
