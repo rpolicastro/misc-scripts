@@ -35,7 +35,7 @@ class mergeBams(object):
             matches = [x for x in bams if i in x]
             if len(matches) == 0:
                 sys.exit('no bam files found for identifier: ' + i)
-            sp.call(' '.join(['samtools merge', matches[:-4] + '_merged.bam', ' '.join(matches)]), shell=True)
+            sp.call(' '.join(['samtools merge', matches[0][:-4] + '_merged.bam', ' '.join(matches)]), shell=True)
     
     def moveBams(self):
         bams = [x for x in os.listdir() if x.endswith('merged.bam')]
@@ -45,7 +45,6 @@ if __name__ == '__main__':
     merge = mergeBams(bamDir = args.bamDirectory,
                       outputDir = args.outputDirectory,
                       identifiers = args.uniqueIdentifiers)
-    print(merge.identifiers)
-    #merge.merge()
-    #merge.moveBams()
+    merge.merge()
+    merge.moveBams()
         
