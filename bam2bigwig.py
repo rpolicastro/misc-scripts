@@ -27,15 +27,21 @@ class deeptools(object):
         os.chdir(self.bam_dir)
     
     def makeBigwigs(self):
-        bams = [x for x in os.listdir(os.getcwd()) if x.endswith('sorted.bam')]
+        bams = [x for x in os.listdir() if x.endswith('sorted.bam')]
         for bam in bams:
             command = ['bamCoverage -b', bam,
                        '-of bigwig',
-                       '-o', os.path.join(self.output_dir, bam[:-4] + '.bw'),
+                       '-o', bam[:-4] + '.bw',
                        '--effectiveGenomeSize', self.effective_genome_size,
                        '--normalizeUsing CPM',
                        '-p', self.processors]
             sp.call(' '.join(command), shell=True)
+    
+    def moveBigwigs(self):
+        bigwigs = [x for x in os.listdir() if x.endswith('.bw')]
+        if len(bigwigs) == 0:
+            sys.exit('no bigwigs found')
+        [os.rename(x, os.path.join(self.output_dir, x)) for x in bigwigs]
 
 if __name__ == '__main__':
     
@@ -44,4 +50,5 @@ if __name__ == '__main__':
                        processors = args.processors,
                        effectiveGenomeSize = args.effectiveGenomeSize)
     bam2bw.makeBigwigs()
+    bam2bw.moveBigwigs()
             
