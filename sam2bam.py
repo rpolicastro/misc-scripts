@@ -20,16 +20,18 @@ class sam2bam(object):
         self.processors = processors
     
     def makeBams(self):
-        sams = [x for x in os.listdir(os.getcwd()) if x.lower().endswith('.sam')]
+        sams = [x for x in os.listdir() if x.lower().endswith('.sam')]
         if len(sams) == 0:
             sys.exit('no sam files found')
         [sp.call(' '.join(['samtools view -@', self.processors, '-b', sam, '>', sam[:-4] + '.bam']), shell=True) for sam in sams]
         
     def sortBams(self):
-        bams = [x for x in os.listdir(os.getcwd()) if x.endswith('.bam')]
+        bams = [x for x in os.listdir() if x.endswith('.bam')]
         if len(bams) == 0:
             sys.exit('no bam files found')
         [sp.call(' '.join(['samtools sort -@', self.processors, bam, '-o', bam[:-4] + '_sorted.bam']), shell=True) for bam in bams]
+        unsorted_bams = [x for x in os.listdir() if x.endswith('.bam') and 'sorted' not in x]
+        [os.remove(x) for x in unsorted_bams]
 
     def indexBams(self):
         bams = [x for x in os.listdir(os.getcwd()) if x.endswith('sorted.bam')]
@@ -40,7 +42,7 @@ class sam2bam(object):
     def moveBams(self, outputDir):
         if not os.path.exists(outputDir):
             os.makedirs(outputDir)
-        bams = [x for x in os.listdir(os.getcwd()) if x.endswith('.bam') or x.endswith('.bai')]
+        bams = [x for x in os.listdir() if x.endswith('.bam') or x.endswith('.bai')]
         [os.rename(bam, os.path.join(outputDir,bam)) for bam in bams]
 
 if __name__ == '__main__':
