@@ -18,7 +18,7 @@ class splitBed(object):
         if not os.path.isfile(bedFile):
             sys.exit('could not find bed file')
         with open(bedFile) as b:
-            filtered = [x.rstrip().split('\t') for x in b if x.lowerstartswith('chr')]
+            filtered = [x.rstrip().split('\t') for x in b if x.lower().startswith('chr')]
         self.bed = pd.DataFrame(filtered)
     
     def loadGeneLists(self, geneListDirectory):
