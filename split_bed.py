@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-b','--bedFile', help='bed file to split', required=True)
 parser.add_argument('-g','--geneListDirectory', help='directory containing gene list(s) in tab delimited format (without column headers)', required=True)
 parser.add_argument('-o','--outputDirectory', help='directory to output split bed file(s)', required=True)
-parser.add_argument('--includeAll', help='whether to create a separate bed file with genes not in the list(s)', action='store_false')
+parser.add_argument('--includeAll', help='whether to create a separate bed file with genes not in the list(s)', action='store_true')
 args = parser.parse_args()
 
 class splitBed(object):
