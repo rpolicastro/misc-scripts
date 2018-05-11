@@ -32,12 +32,14 @@ class splitBed(object):
     def splitBed(self, includeAll=False):
         self.matches = {}
         for key,values in self.gene_lists.items():
-            self.matches[key] = self.bed[self.bed.iloc[:][3].isin(values)]
+            genes = '(' + '(\\.\\d)?|'.join(values) + ')'
+            self.matches[key] = self.bed[self.bed.iloc[:][3].str.contains(genes)]
         if includeAll:
             self.include_all = True
             listed_genes = [] 
             [listed_genes.extend(values) for key,values in self.gene_lists.items()]
-            self.unmatched = self.bed[~self.bed.iloc[:][3].isin(listed_genes)]
+            genes = '(' + '(\\.\\d)?|'.join(listed_genes) + ')'
+            self.unmatched = self.bed[~self.bed.iloc[:][3].str.contains(genes)]
         
     def exportFiles(self, outputDir):
         if not os.path.exists(outputDir):
