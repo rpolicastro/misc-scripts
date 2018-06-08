@@ -24,8 +24,8 @@ class cleanMacsPeaks(object):
                     cleaned = [x.rstrip().split('\t') for x in f if not x.startswith('#') and x.rstrip() != '']
                     df = pd.DataFrame(cleaned)
                     df.columns = df.iloc[0]
-                    df = df[1:]
-                    df.to_csv(os.path.join(outputDir, file[:-4] + '.txt'), sep='\t', header=True, index=False)
+                    df = df[1:4]
+                    df.to_csv(os.path.join(outputDir, file[:-4] + '.bed'), sep='\t', header=True, index=False)
 
 if __name__ == '__main__':
     
